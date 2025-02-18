@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "trenchkit"
+version = "0.1.0"
+description = "Tools"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "trenchkit"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+trenchkit = "trenchkit.trenchkit:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
