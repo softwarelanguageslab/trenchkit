@@ -14,6 +14,7 @@ def load_configuration():
 def run(args):
 	parser = argparse.ArgumentParser(description="clang-format Program")
 	parser.add_argument("-path", help="Path for directory to format", default=".")
+	parser.add_argument("-cfile", action="store_true", help="Verbose mode")
 	parser.add_argument("-v", action="store_true", help="Verbose mode")
 	parser.add_argument("args", nargs=argparse.REMAINDER, help="Additional arguments for clang-format")
 	parsed_args = parser.parse_args(args)
@@ -34,7 +35,8 @@ def run(args):
 				find_cmd.extend(["!", "-path", pattern])
     
 	verbose_flag = ["-verbose"] if parsed_args.v else []
-	find_cmd.extend(["-exec", CONFIGURATION["CLANG_FORMAT_CALL"], "-i", *verbose_flag, f"-style=file:{format_file}", "{}", "+"])
+	cfile_flag = [f"-style=file:{format_file}"] if parsed_args.v else []
+	find_cmd.extend(["-exec", CONFIGURATION["CLANG_FORMAT_CALL"], "-i", *verbose_flag, *cfile_flag, "{}", "+"])
 
     
 	print("Running:", " ".join(find_cmd))
