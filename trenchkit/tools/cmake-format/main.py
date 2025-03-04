@@ -5,7 +5,6 @@ import subprocess
 
 def format_cmake(target, config):
     if os.path.isdir(target):
-        # Find all CMakeLists.txt and .cmake files
         cmake_files = [
             os.path.join(root, file)
             for root, _, files in os.walk(target)
@@ -13,7 +12,6 @@ def format_cmake(target, config):
             if file.endswith(("CMakeLists.txt", ".cmake"))
         ]
     else:
-        # Single file case
         cmake_files = [target]
 
     if not cmake_files:
