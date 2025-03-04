@@ -33,6 +33,6 @@ def run(args):
     parser = argparse.ArgumentParser(description="cmake-format Program")
     parser.add_argument("-target", help="Path to the directory or file", default=".")
     parser.add_argument("-config", help="Path to cmake-format config file", default=".cmake-format.yaml")
-    parsed_args = parser.parse_args(args)
+    parsed_args, unknown = parser.parse_known_args()
 
     format_cmake(parsed_args.target, parsed_args.config)

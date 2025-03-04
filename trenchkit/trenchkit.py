@@ -20,10 +20,10 @@ def main():
     parser = argparse.ArgumentParser(description="Tools Program")
     parser.add_argument("tool", choices=tools.keys(), help="The tool to run")
     parser.add_argument("args", nargs=argparse.REMAINDER, help="Arguments for the tool")
-
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
 
     if args.tool in tools:
+        print(f"Running tool: {args.tool}")
         tools[args.tool](args.args)
     else:
         print(f"Tool '{args.tool}' not found.")

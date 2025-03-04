@@ -2,41 +2,29 @@ import os
 import subprocess
 import argparse
 
-CONFIGURATION = {}
-
-def load_configuration():
-	with open(os.path.join(os.path.dirname(__file__), "settings.conf"), "r") as configuration_file:
-		lines = configuration_file.read().splitlines()
-		for line in lines:
-			key, value = line.split('=')
-			CONFIGURATION[key] = value
 
 def run(args):
 	parser = argparse.ArgumentParser(description="clang-format Program")
-	parser.add_argument("-target", help="Path config file", default=".")
-	parser.add_argument("-csrc", action="store_true", help="Config file source")
-	parser.add_argument("-v", action="store_true", help="Verbose mode")
-	parser.add_argument("args", nargs=argparse.REMAINDER, help="Additional arguments for clang-format")
-	parsed_args = parser.parse_args(args)
-	
-	load_configuration()
-
-	format_file = os.path.join(os.path.dirname(__file__), CONFIGURATION["CLANG_FORMAT_FILE"])
-	format_ignore_file = os.path.join(os.path.dirname(__file__), CONFIGURATION["CLANG_IGNORE_FILE"])
+	parser.add_argument("-t", "--target", help="Path config file", default=".")
+	parser.add_argument("-c", "--clang", default="clang-format", help="Clang-Format command")
+	parser.add_argument("-s", "--source", help="Config format file")
+	parser.add_argument("-i", "--ignore", help="Config ignore file")
+	parser.add_argument("-v", "--verbose", action="store_true", help="Verbose mode")
+	parsed_args, unknown = parser.parse_known_args()
 
 	find_cmd = ["find", parsed_args.target, "-type", "f", "(", "-name", "*.h", "-o", "-name", "*.cpp", "-o", "-name", "*.c", "-o", "-name", "*.hpp", ")"]
     
-	if os.path.exists(format_ignore_file):
-		with open(format_ignore_file, "r") as f:
+	if parsed_args.ignore and os.path.exists(parsed_args.ignore):
+		with open(parsed_args.ignore, "r") as f:
 			for pattern in f:
 				pattern = pattern.strip()
 				if not pattern or pattern.startswith("#"):
 					continue
 				find_cmd.extend(["!", "-path", pattern])
     
-	verbose_flag = ["-verbose"] if parsed_args.v else []
-	cfile_source = [f"-style=file:{parsed_args.csrc}"] if parsed_args.csrc else []
-	find_cmd.extend(["-exec", CONFIGURATION["CLANG_FORMAT_CALL"], "-i", *verbose_flag, *cfile_source, "{}", "+"])
+	verbose_flag = ["-verbose"] if parsed_args.verbose else []
+	cfile_source = [f"-style=file:{parsed_args.source}"] if parsed_args.source else []
+	find_cmd.extend(["-exec", parsed_args.clang, "-i", *verbose_flag, *cfile_source, "{}", "+"])
 
     
 	print("Running:", " ".join(find_cmd))
