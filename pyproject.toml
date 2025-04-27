@@ -11,6 +11,7 @@ python = "^3.10"
 
 [tool.poetry.scripts]
 trenchkit = "trenchkit.trenchkit:main"
+trenchkit-check = "trenchkit.checks:run_checks"
 
 [build-system]
 requires = ["poetry-core"]
